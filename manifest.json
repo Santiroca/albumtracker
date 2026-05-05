@@ -1,8 +1,8 @@
 {
   "name": "Panini Album Tracker",
-  "short_name": "Panini",
+  "short_name": "FWC 2026",
   "description": "Tracker de figuritas Panini FIFA World Cup 2026",
-  "start_url": "/albumtracker/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0a0c14",
   "theme_color": "#0a0c14",

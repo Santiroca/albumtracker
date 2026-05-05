@@ -19,6 +19,7 @@ let gf = 'all';    // grid filter
 let tradStream = null;
 let tradRaf = null;
 let removeTarget = null;
+let completedBadges = new Set();
 
 // ═══════════════════════════════════════════════════════════
 // PERSIST
@@ -29,7 +30,11 @@ function load(){
     const r = localStorage.getItem('pn26v2');
     if(r){ const raw=JSON.parse(r); col={}; for(const k in raw) col[k.toUpperCase()]=raw[k]; }
   }catch(e){}
+  try{
+    completedBadges = new Set(JSON.parse(localStorage.getItem('pn26_completed')||'[]'));
+  }catch(e){ completedBadges = new Set(); }
 }
+function saveCompleted(){ localStorage.setItem('pn26_completed', JSON.stringify([...completedBadges])); }
 
 // ═══════════════════════════════════════════════════════════
 // TEAM SELECTOR INIT
@@ -61,7 +66,7 @@ function resolveId(teamKey, numStr){
   if(!numStr) return null;
   // Special teams: CC uses just numbers (CC1..CC14), 00 is just '00'
   let id;
-  if(teamKey === '00') id = '00';
+  if(teamKey === '00') id = numStr === '0' || numStr === '00' ? '00' : `FWC-${numStr}`;
   else if(teamKey === 'CC') id = `CC${numStr}`;
   else if(teamKey === 'FWC') id = `FWC-${numStr}`;
   else id = `${teamKey}-${numStr}`;
@@ -131,6 +136,34 @@ function updateStats(){
   document.getElementById('ms-mi').textContent = miss;
   document.getElementById('ms-du').textContent = dups;
   updateTradeSummary();
+  checkCompletions();
+}
+function launchConfetti(msg){
+  const canvas = document.getElementById('confetti-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const pieces = Array.from({length:120}, ()=>({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height,vx:(Math.random()-.5)*4,vy:2+Math.random()*5,s:4+Math.random()*5,c:`hsl(${Math.random()*360} 90% 60%)`}));
+  let t=0;
+  (function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);});
+    if(t++<90) requestAnimationFrame(draw); else { canvas.style.display='none'; }
+  })();
+  toast(msg,'ok');
+}
+function checkCompletions(){
+  for(const team of ['00','CC','FWC']){
+    const stickers = STICKERS_BY_TEAM[team] || [];
+    if(!stickers.length) continue;
+    const done = stickers.every(s=>col[s.id.toUpperCase()] > 0);
+    if(done && !completedBadges.has(team)){
+      completedBadges.add(team); saveCompleted();
+      const label = (TEAMS.find(t=>t.key===team)?.label || team).split('·').pop().trim();
+      launchConfetti(`🎉 Felicidades, completaste la selección de ${label}`);
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -822,6 +855,24 @@ async function shareWhatsApp(){
   } else {
     toast('Primero generá el QR','warn');
   }
+}
+function exportData(){
+  const payload = JSON.stringify({col, friends: loadFriends(), completed:[...completedBadges]});
+  navigator.clipboard.writeText(payload).then(()=>toast('Respaldo copiado al portapapeles','ok'));
+}
+function importData(){
+  const raw = prompt('Pegá acá el respaldo exportado:');
+  if(!raw) return;
+  try{
+    const parsed = JSON.parse(raw);
+    col = parsed.col || {};
+    save();
+    if(Array.isArray(parsed.friends)) saveFriends(parsed.friends);
+    completedBadges = new Set(parsed.completed || []);
+    saveCompleted();
+    updateStats(); renderGrid(); renderDupes(); renderFriends();
+    toast('Respaldo importado correctamente','ok');
+  }catch(e){ toast('Respaldo inválido','err'); }
 }
 
 // ─── SHARE QR AS IMAGE ───────────────────────────────────

@@ -14,13 +14,11 @@
 <script src="jsQR.js"></script>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Panini">
-</head>
-<body>
-</head>
 <body>
 
 <div id="splash">
@@ -166,11 +164,24 @@
         <div class="sec-lbl" style="margin-top:12px;">Disponibles para dar <span id="sumd-count" style="color:var(--text);"></span></div>
         <div class="chips" id="sumd"></div>
       </div>
+      <div class="card">
+        <div class="card-title">💾 Importar / Exportar</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-p" onclick="exportData()">Exportar respaldo</button>
+          <button class="btn btn-s" onclick="importData()">Importar respaldo</button>
+        </div>
+      </div>
 
     </div>
   </div>
 
 </div>
+<nav class="bottom-nav">
+  <button class="bn active" id="bn-album" onclick="goTab('album')"><span class="bn-icon">📚</span>Álbum</button>
+  <button class="bn" id="bn-dupes" onclick="goTab('dupes')"><span class="bn-icon">🔁</span>Repetidas</button>
+  <button class="bn" id="bn-trade" onclick="goTab('trade')"><span class="bn-icon">🤝</span>Intercambio</button>
+</nav>
+<canvas id="confetti-canvas"></canvas>
 
 <!-- REMOVE CONFIRM SHEET -->
 <div class="remove-overlay" id="remove-overlay" onclick="closeRemoveSheet()">

@@ -7,7 +7,7 @@
 // WORLD CUP 2026 GROUPS (sorted by draw)
 // ═══════════════════════════════════════════════════════════
 const WC_GROUPS = [
-  { name: 'Copa del Mundo', teams: ['00','FWC_INTRO'] },
+  { name: 'Copa del Mundo', teams: ['00'] },
   { name: 'Grupo A', teams: ['MEX','RSA','KOR','CZE'] },
   { name: 'Grupo B', teams: ['CAN','BIH','QAT','SUI'] },
   { name: 'Grupo C', teams: ['BRA','MAR','HAI','SCO'] },
@@ -25,8 +25,7 @@ const WC_GROUPS = [
 ];
 
 const TEAMS = [
-  { key:'00',  label:'🌟 We Are Panini' },
-  { key:'FWC_INTRO', label:'🏆 FWC · FIFA World Cup 2026' },
+  { key:'00',  label:'🏆 00 · FIFA World Cup 2026' },
   { key:'FWC', label:'🏆 FWC · FIFA World Cup History' },
   { key:'CC',  label:'🥤 CC · Coca-Cola (Latin America)' },
   { key:'ALG', label:'🇩🇿 ALG · Algeria' },
@@ -83,8 +82,8 @@ function S(id, name, holo=false){ return {id, name, holo}; }
 function team(stickers){ return stickers; }
 
 const STICKERS_BY_TEAM = {
-  '00':  [ S('00', 'Panini Logo', true) ],
-  'FWC_INTRO': [
+  '00':  [
+    S('00', 'FIFA World Cup 2026 Emblem', true),
     S('FWC-1','Official Emblem 1/2',true), S('FWC-2','Official Emblem 2/2',true),
     S('FWC-3','Official Mascots'), S('FWC-4','Official Slogan'), S('FWC-5','Official Ball'),
     S('FWC-6','Canada (Host Country)',true), S('FWC-7','Mexico (Host Country)',true), S('FWC-8','USA (Host Country)',true),
