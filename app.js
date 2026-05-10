@@ -27,8 +27,8 @@ let undoSnapshot = null;
 // ═══════════════════════════════════════════════════════════
 // Pegá acá los datos de tu proyecto Supabase.
 // Estos datos NO son la API key secreta de OpenAI; el anon key de Supabase está pensado para usarse en frontend con RLS.
-const SUPABASE_URL = '';
-const SUPABASE_ANON_KEY = '';
+const SUPABASE_URL = 'https://xcaqlqmpvelzhvcejqdz.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Z98vUM6TdhWmlABzSYnxCg_03jUw2Th';
 
 let onlineSyncTimer = null;
 let onlineFriendsRefreshTimer = null;
