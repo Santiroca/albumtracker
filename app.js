@@ -3741,7 +3741,7 @@ async function scanPhotoImportWithVisionApi(file){
     const form = new FormData();
     form.append('image', file);
 
-    const res = await fetch('/api/scan-stickers', {
+    const res = await fetch('https://albumtracker-backend.onrender.com/api/scan-stickers', {
       method: 'POST',
       body: form
     });
