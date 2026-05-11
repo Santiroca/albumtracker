@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#111016">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Album Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Album Tracker">
+  <meta name="theme-color" content="#0a0c14">
+</head>
+<body>
+
+<div id="splash">
+  <img class="splash-logo" id="splash-logo-img" src="images/wc-logo.png" alt="FIFA World Cup 2026">
+  <div class="splash-title">Panini Tracker</div>
+  <div class="splash-sub">World Cup 2026</div>
+  <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+</div>
+<div class="sidebar" id="sidebar">
+  <!-- Logo -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+    <img id="wc-logo-sidebar" src="images/wc-logo.png" alt="WC2026" style="height:38px;width:auto;object-fit:contain;">
+    <div>
+      <div class="logo" style="font-size:1.2rem;letter-spacing:2px;line-height:1;">Panini Album</div>
+      <div class="logo-sub" style="font-size:.42rem;letter-spacing:3px;">Tracker · World Cup 2026</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="sidebar-stats">
+    <div class="sidebar-stat-row">
+      <div><div class="sidebar-stat-n" id="pct-side">0%</div><div class="sidebar-stat-l">Progreso</div></div>
+      <div style="text-align:right"><div class="sidebar-stat-n" id="smain-side" style="font-size:1rem;">0/994</div></div>
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" id="prog-side" style="width:0%"></div></div>
+    <div style="display:flex;gap:6px;margin-top:4px;">
+      <div style="flex:1;text-align:center;"><div class="sidebar-stat-n" id="ms-got-side" style="font-size:1.1rem;color:var(--green);">0</div><div class="sidebar-stat-l">Tengo</div></div>
+      <div style="flex:1;text-align:center;"><div class="sidebar-stat-n" id="ms-mis-side" style="font-size:1.1rem;color:var(--red);">0</div><div class="sidebar-stat-l">Faltan</div></div>
+      <div style="flex:1;text-align:center;"><div class="sidebar-stat-n" id="ms-dup-side" style="font-size:1.1rem;color:var(--accent);">0</div><div class="sidebar-stat-l">Repet.</div></div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <button class="sidebar-nav-btn active" id="snb-album" onclick="goTab('album')">
+      <span class="sidebar-nav-icon">📖</span> Álbum
+    </button>
+    <button class="sidebar-nav-btn" id="snb-trade" onclick="goTab('trade')">
+      <span class="sidebar-nav-icon">🤝</span> Intercambio
+    </button>
+    <button class="sidebar-nav-btn" id="snb-summary" onclick="goTab('summary')">
+      <span class="sidebar-nav-icon">📊</span> Progreso
+    </button>
+    <button class="sidebar-nav-btn" id="snb-config" onclick="goTab('config')">
+      <span class="sidebar-nav-icon">⚙️</span> Configuración
+    </button>
+  </nav>
+
+  <div class="sidebar-tutorial-bottom">
+    <button class="sidebar-tutorial-btn" onclick="showTutorial(true)" type="button">
+      <span>?</span>
+      Ver tutorial
+    </button>
+  </div>
+</div>
+
+<div class="main-area">
+<header class="mobile-header">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img id="wc-logo-img" src="images/wc-logo.png" alt="FIFA World Cup 2026" style="height:42px;width:auto;object-fit:contain;">
+      <div>
+        <div class="logo" style="font-size:1.4rem;letter-spacing:3px;line-height:1;">Panini Album</div>
+        <div class="logo-sub" style="font-size:.48rem;letter-spacing:3px;">Tracker · World Cup 2026</div>
+      </div>
+    </div>
+    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;">
+      <div class="prog-pct" id="pct">0.0%</div>
+      <div class="prog-detail" id="smain">0 / 0</div>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+  <div class="mstats">
+    <div class="ms"><div class="ms-n" id="ms-g">0</div><div class="ms-l">Tengo</div></div>
+    <div class="ms"><div class="ms-n" id="ms-mi">0</div><div class="ms-l">Faltan</div></div>
+    <div class="ms"><div class="ms-n" id="ms-du">0</div><div class="ms-l">Repet.</div></div>
+    
+  </div>
+</header>
+
+<div class="scroll-indicator" id="scroll-ind"><span class="scroll-ind-flag" id="scroll-ind-flag"></span><span class="scroll-ind-abbrev" id="scroll-ind-abbrev"></span></div>
+<div class="scroll" id="main-scroll">
+
+  <!-- ══ ALBUM ══ -->
+  <div class="panel active" id="panel-album">
+    <div class="gfilters">
+      <button class="fb2 active" onclick="setF('all',this)">Todas</button>
+      <button class="fb2" onclick="setF('miss',this)">Faltan</button>
+      <button class="fb2" onclick="setF('got',this)">Tengo</button>
+      <button class="fb2" onclick="setF('dup',this)">Repetidas</button>
+    </div>
+<div class="search-wrap">
+      <input type="text" class="gsearch" id="gs" placeholder="Buscar por ID, jugador, país..." oninput="onSearchInput()">
+      <button class="search-clear" id="gs-clear" onclick="clearSearch()" aria-label="Limpiar búsqueda">×</button>
+    </div>
+    <div class="save-indicator-inline" id="save-indicator-inline"></div>
+
+    <div id="album-content"></div>
+
+
+  
+  </div>
+
+
+  <!-- ══ RESUMEN ══ -->
+  <div class="panel" id="panel-summary">
+    <section class="summary-hero" id="summary-hero">
+      <div class="summary-hero-head">
+        <div>
+          <div class="summary-kicker">Progreso del álbum</div>
+          <h2 class="summary-title">Progreso general</h2>
+        </div>
+        <div class="summary-big-pct" id="summary-pct-main">0%</div>
+      </div>
+
+      <div class="summary-main-grid">
+        <div class="summary-main-card summary-progress-card">
+          <div class="summary-donut" id="summary-donut" style="--pct:0"><span></span></div>
+          <div>
+            <div class="summary-label">Completado</div>
+            <div class="summary-value" id="summary-pct">0%</div>
+          </div>
+        </div>
+        <div class="summary-main-card">
+          <div class="summary-icon summary-icon-stickers" aria-hidden="true"></div>
+          <div>
+            <div class="summary-label">Total</div>
+            <div class="summary-value" id="summary-total">994</div>
+          </div>
+        </div>
+        <div class="summary-main-card">
+          <div class="summary-icon summary-icon-red">✕</div>
+          <div>
+            <div class="summary-label">Me faltan</div>
+            <div class="summary-value" id="summary-miss">994</div>
+          </div>
+        </div>
+        <div class="summary-main-card">
+          <div class="summary-icon summary-icon-green">✓</div>
+          <div>
+            <div class="summary-label">Tengo</div>
+            <div class="summary-value" id="summary-got">0</div>
+          </div>
+        </div>
+        <div class="summary-main-card">
+          <div class="summary-icon summary-icon-dupes" aria-hidden="true"><span class="sticker-back"></span><span class="sticker-front"></span><span class="dupe-badge">×2</span></div>
+          <div>
+            <div class="summary-label">Repetidas</div>
+            <div class="summary-value" id="summary-dups">0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="team-progress-section">
+      <div class="team-progress-head">
+        <div>
+          <div class="summary-kicker">Selecciones</div>
+          <h2 class="summary-title">Progreso por grupos</h2>
+        </div>
+        <div class="team-progress-actions">
+          <button class="fb2" id="team-sort-complete" onclick="setTeamSummarySort('complete', this)">Más completas</button>
+          <button class="fb2" id="team-sort-missing" onclick="setTeamSummarySort('missing', this)">Más vacías</button>
+        </div>
+      </div>
+      <div class="team-progress-list" id="team-progress-list"></div>
+    </section>
+  </div>
+
+
+  <!-- ══ CONFIGURACIÓN ══ -->
+  <div class="panel" id="panel-config">
+    <section class="settings-hero">
+      <div>
+        <div class="settings-kicker">Configuración</div>
+        <h2 class="settings-title">Ajustes y datos</h2>
+        <p class="settings-sub">Backup, importación, repetidas y ayuda de la app en un solo lugar.</p>
+      </div>
+      <button class="settings-help-btn" type="button" onclick="showTutorial(true)">Ver tutorial</button>
+    </section>
+
+    <div class="settings-grid">
+
+      <div class="card settings-card settings-update-card settings-compact-strip">
+        <div>
+          <div class="card-title">🔄 Buscar actualización</div>
+          <div class="settings-card-sub">Si en iPhone no cambia, cerrá la app y volvé a abrirla.</div>
+        </div>
+        <button class="btn btn-s settings-full-btn" type="button" onclick="applyPwaUpdate()">Buscar actualización</button>
+      </div>
+
+      <div class="card settings-card settings-card-wide" id="import-export-card">
+        <div class="settings-card-head settings-card-head-compact">
+          <div>
+            <div class="card-title">📦 Importar / exportar / Figuritas</div>
+          </div>
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-p" onclick="exportCollection()">📤 Exportar colección</button>
+          <label class="settings-file-label">
+            <input type="file" id="import-file" accept=".json,.txt,.csv,application/json,text/plain" style="display:none" onchange="importFromFile(event)">
+            <span class="btn btn-s settings-file-btn">📥 Importar colección</span>
+          </label>
+          <button class="btn btn-s" onclick="toggleFiguritasImport()">📋 Importar desde Figuritas</button>
+        </div>
+        <div class="figuritas-import-box" id="figuritas-import-box">
+          <div class="figuritas-import-help">Pegá el mensaje exportado desde la app Figuritas. La app reconstruye tu álbum usando “Me faltan” y “Repetidas”.</div>
+          <textarea class="figuritas-import-textarea" id="figuritas-import-text" placeholder="Pegá acá el mensaje de Figuritas App - Lista..."></textarea>
+          <div class="figuritas-import-actions">
+            <button class="btn btn-p" onclick="importFromFiguritas()" style="flex:1;padding:10px;">Importar Figuritas</button>
+            <button class="btn btn-g" onclick="clearFiguritasImport()" style="padding:10px 12px;">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card settings-card settings-card-wide">
+        <div class="settings-card-head settings-card-head-compact">
+          <div>
+            <div class="card-title">♻️ Mis repetidas</div>
+          </div>
+          <button class="btn btn-g settings-mini-btn" onclick="copyDupes()">Copiar</button>
+        </div>
+        <div class="rlist settings-rlist" id="rlist"></div>
+        <div id="nodup" class="empty empty-state" style="display:none;">
+          <div class="empty-title">Todavía no tenés repetidas</div>
+          <div class="empty-sub">Cuando sumes una figurita que ya tenés, va a aparecer acá.</div>
+        </div>
+      </div>
+
+      <div class="card settings-card danger-zone settings-danger-compact">
+        <div>
+          <div class="card-title">🗑️ Borrar álbum</div>
+          <div class="settings-card-sub">Borra tu progreso local de este dispositivo.</div>
+        </div>
+        <button class="btn btn-r settings-full-btn" type="button" onclick="doReset()">Borrar álbum</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TRADE ══ -->
+  <div class="panel" id="panel-trade">
+    <div class="tsec">
+
+      <!-- MI QR -->
+      <div class="card trade-step-card trade-step-1">
+        <div class="mobile-step-label">1. Mi código</div>
+        <div class="card-title">🔁 Mi código fijo / QR</div>
+        <div id="qrbox"></div>
+        <div class="qr-help">Este QR funciona igual que tu código fijo: tu amigo lo escanea una sola vez, te guarda y después tus repetidas se actualizan solas.</div>
+        <div class="trade-share-actions">
+          <button onclick="shareWhatsApp()" style="background:#25D366;border:none;border-radius:14px;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(37,211,102,.3);transition:transform .1s;" onmousedown="this.style.transform='scale(.96)'" onmouseup="this.style.transform='scale(1)'">
+            <img id="wpp-logo-img" src="images/whatsapp-logo.png" style="width:26px;height:26px;object-fit:contain;" alt="WhatsApp">
+            <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;color:#fff;letter-spacing:.3px;">Compartir</span>
+          </button>
+          <button class="btn btn-s" onclick="copyTradeLink()" style="padding:10px 18px;">🔗 Copiar link</button>
+        </div>
+      </div>
+
+      <!-- ESCANEAR -->
+      <div class="card scanner-card trade-step-card trade-step-2">
+        <div class="mobile-step-label">2. Agregar amigo</div>
+        <div class="scanner-head">
+          <div>
+            <div class="card-title scanner-title">📷 Escanear QR de amigo</div>
+            <div class="scanner-sub">Escaneá el QR de código fijo de tu amigo. Lo guardás una vez y después sus repetidas se actualizan desde su tarjeta.</div>
+          </div>
+</div>
+
+        <input type="file" id="qr-capture-input" accept="image/*" capture="environment" style="display:none" onchange="readQRFile(event)">
+        <input type="file" id="qrfile" accept="image/*" style="display:none" onchange="readQRFile(event)">
+        <img id="qr-preview-img" style="display:none;width:100%;border-radius:14px;margin-bottom:10px;" alt="QR preview">
+
+        <div class="cam-box scanner-box" id="trade-cam-box">
+          <video id="trade-video" autoplay playsinline webkit-playsinline muted></video>
+          <canvas id="trade-scan-canvas" style="display:none"></canvas>
+          <div class="cam-ov scanner-overlay">
+            <div class="scan-rect scanner-frame">
+              <span class="scan-corner tl"></span>
+              <span class="scan-corner tr"></span>
+              <span class="scan-corner bl"></span>
+              <span class="scan-corner br"></span>
+              <div class="scan-line"></div>
+            </div>
+            <div class="cam-hint">Centrar QR · acercar/alejar</div>
+          </div>
+        </div>
+<div class="scanner-actions">
+          <button class="btn btn-p scanner-primary" id="trade-scan-btn" onclick="toggleTradeCam()">📷 Escanear QR fijo</button>
+          <button class="btn btn-s scanner-secondary" onclick="document.getElementById('qrfile').click()">🖼️ Elegir QR de galería</button>
+        </div>
+</div>
+
+      <!-- AMIGOS -->
+      <div class="card trade-friends-card">
+        <div class="online-sync-box" id="online-sync-box">
+          <div class="online-sync-head">
+            <div>
+              <div class="online-sync-kicker">Amigos actualizados</div>
+              <div class="online-sync-title">Tu código fijo</div>
+            </div>
+            <button class="btn btn-s online-sync-btn" type="button" onclick="copyMyOnlineFriendCode()">Copiar mi código</button>
+          </div>
+          <div class="online-sync-code" id="my-online-code">Configurá Supabase para activar</div>
+          <div class="online-sync-help" id="online-sync-help">Cuando esté activo, tus amigos guardan este código una vez y tus repetidas se actualizan solas.</div>
+          <div class="online-add-row">
+            <input type="text" id="online-friend-name" class="gsearch" placeholder="Nombre del amigo">
+            <input type="text" id="online-friend-code" class="gsearch" placeholder="Código fijo">
+            <button class="btn btn-p" type="button" onclick="saveOnlineFriend()">Guardar amigo</button>
+          </div>
+        </div>
+        <div class="card-title friends-list-title">👥 Mis amigos</div>
+        <div class="friend-list" id="friend-list"></div>
+      </div>
+
+      <!-- MATCH -->
+      <div class="card trade-step-card trade-step-3" id="matchcard" style="display:none;">
+        <div class="mobile-step-label">3. Resultado</div>
+        <div class="card-title">🎯 Match listo</div>
+        <!-- Save friend prompt -->
+        <div id="friend-save-prompt" class="friend-code-prompt" style="display:none;">
+          <div class="friend-code-eyebrow">Guardar amigo</div>
+          <div class="friend-code-title">¿De quién es este código fijo?</div>
+          <div class="friend-code-sub">Poné el nombre para guardarlo. Después tocás su tarjeta y la app trae sus repetidas actualizadas.</div>
+          <!-- Existing friends -->
+          <div id="prompt-friends-list" class="prompt-friends-list"></div>
+          <!-- Divider shown only when friends exist -->
+          <div id="prompt-divider" class="prompt-divider" style="display:none;">
+            <div></div>
+            <span>O AGREGAR NUEVO</span>
+            <div></div>
+          </div>
+          <!-- New friend input -->
+          <div id="prompt-new-row" class="prompt-new-row">
+            <input type="text" id="friend-name-input" class="gsearch" placeholder="Nombre (ej: Santi)">
+            <button class="btn btn-p" onclick="saveFriendFromMatch()">Guardar amigo</button>
+          </div>
+        </div>
+        <div class="trade-result-card">
+          <div class="trade-result-head">
+            <div class="trade-block-title">Resultado</div>
+            <button class="trade-offer-share-mini" type="button" onclick="shareTradeOffer()"><img class="trade-offer-share-icon" src="images/share-proposal.png" alt="" aria-hidden="true">Compartir propuesta</button>
+          </div>
+          <div class="match-score">
+            <div class="match-side">
+              <div class="match-num" style="color:var(--green);" id="match-get-n">0</div>
+              <div class="match-lbl">Me da</div>
+            </div>
+            <div class="match-vs">↔</div>
+            <div class="match-side">
+              <div class="match-num" style="color:var(--red);" id="match-give-n">0</div>
+              <div class="match-lbl">Le doy</div>
+            </div>
+          </div>
+          <div class="match-verdict-wrap">
+            <span class="match-verdict" id="match-verdict"></span>
+            <div class="trade-advice" id="trade-advice"></div>
+          </div>
+        </div>
+        <div class="trade-live-summary" id="trade-live-summary">
+          <div class="trade-live-col trade-live-get">
+            <div class="trade-live-title">Me da</div>
+            <div class="trade-live-list" id="trade-live-get-list">
+              <span class="trade-live-empty">Todavía no elegiste ninguna</span>
+            </div>
+          </div>
+          <div class="trade-live-col trade-live-give">
+            <div class="trade-live-title">Le doy</div>
+            <div class="trade-live-list" id="trade-live-give-list">
+              <span class="trade-live-empty">Todavía no elegiste ninguna</span>
+            </div>
+          </div>
+        </div>
+        <div class="mcard trade-get-card">
+          <div class="mcard-title">Me da · <span id="get-sel-count" style="color:var(--green);">0 seleccionadas</span></div>
+          <div class="chips" id="cget"></div>
+        </div>
+        <div class="mcard trade-give-card" style="margin-top:8px;">
+          <div class="mcard-title">Le doy · <span id="give-sel-count" style="color:var(--red);">0 seleccionadas</span></div>
+          <div class="chips" id="cgive"></div>
+        </div>
+        <div class="mobile-step-label mobile-confirm-label">4. Confirmar</div>
+        <div id="confirm-trade-wrap" class="trade-confirm-actions" style="display:none;margin-top:12px;">
+          <button class="trade-cancel-btn" onclick="requestCancelTradeMatch()">
+            Cancelar cambio
+          </button>
+          <button class="trade-confirm-btn" onclick="requestConfirmTrade()">
+            ✅ Confirmar intercambio
+          </button>
+        </div>
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+</div>
+
+
+<div class="trade-confirm-overlay" id="trade-confirm-overlay" onclick="closeTradeActionConfirm()">
+  <div class="trade-confirm-sheet" onclick="event.stopPropagation()">
+    <div class="trade-confirm-kicker" id="trade-confirm-kicker">Intercambio</div>
+    <div class="trade-confirm-title" id="trade-confirm-title">Confirmar acción</div>
+    <div class="trade-confirm-sub" id="trade-confirm-sub">Revisá antes de continuar.</div>
+    <div class="trade-confirm-buttons">
+      <button class="trade-confirm-back" onclick="closeTradeActionConfirm()">Volver</button>
+      <button class="trade-confirm-danger" id="trade-confirm-action" onclick="runTradeActionConfirm()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE CONFIRM SHEET -->
+<div class="remove-overlay" id="remove-overlay" onclick="closeRemoveSheet()">
+  <div class="remove-sheet" onclick="event.stopPropagation()">
+    <div class="remove-sheet-title">¿Quitar figurita?</div>
+    <div class="remove-sheet-id" id="rs-id"></div>
+    <div class="remove-sheet-sub" id="rs-name"></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn btn-d" onclick="confirmRemove()">Quitar una copia</button>
+      <button class="btn btn-s" onclick="closeRemoveSheet()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="import-preview-overlay" id="import-preview-overlay" onclick="closeImportPreview()">
+  <div class="import-preview-card" onclick="event.stopPropagation()">
+    <div class="import-preview-kicker" id="import-preview-source">Importación</div>
+    <div class="import-preview-title">Revisá antes de importar</div>
+    <div class="import-preview-sub">Esto va a reemplazar tu colección actual. Confirmalo solo si los números están bien.</div>
+
+    <div class="import-preview-stats">
+      <div class="import-preview-row">
+        <span>Pegadas</span>
+        <strong><b id="ip-got-before">0</b> <em>→</em> <b id="ip-got-after">0</b></strong>
+      </div>
+      <div class="import-preview-row">
+        <span>Repetidas</span>
+        <strong><b id="ip-dups-before">0</b> <em>→</em> <b id="ip-dups-after">0</b></strong>
+      </div>
+      <div class="import-preview-row">
+        <span>Faltan</span>
+        <strong><b id="ip-miss-before">0</b> <em>→</em> <b id="ip-miss-after">0</b></strong>
+      </div>
+    </div>
+
+    <div class="import-preview-note" id="import-preview-note"></div>
+
+    <div class="import-preview-actions">
+      <button class="btn btn-g" onclick="closeImportPreview()">Cancelar</button>
+      <button class="btn btn-p" onclick="confirmImportPreview()">Importar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="page-confirm-overlay" id="reset-album-confirm" aria-hidden="true">
+  <div class="page-confirm-card" role="dialog" aria-modal="true" aria-labelledby="reset-album-confirm-title">
+    <div class="page-confirm-icon">🗑️</div>
+    <div class="page-confirm-title" id="reset-album-confirm-title">Borrar álbum</div>
+    <div class="page-confirm-text">Se va a borrar tu progreso local de este dispositivo. Esta acción no se puede deshacer.</div>
+    <div class="page-confirm-actions">
+      <button class="page-confirm-btn ghost" type="button" onclick="closeResetAlbumConfirm()">Cancelar</button>
+      <button class="page-confirm-btn danger" type="button" onclick="confirmResetAlbum()">Borrar álbum</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="page-confirm-overlay" id="friend-delete-confirm" aria-hidden="true">
+  <div class="page-confirm-card" role="dialog" aria-modal="true" aria-labelledby="friend-delete-confirm-title">
+    <div class="page-confirm-icon">✖️</div>
+    <div class="page-confirm-title" id="friend-delete-confirm-title">Eliminar amigo</div>
+    <div class="page-confirm-text" id="friend-delete-confirm-text">¿Querés eliminar este amigo?</div>
+    <div class="page-confirm-actions">
+      <button class="page-confirm-btn ghost" type="button" onclick="closeFriendDeleteConfirm()">Cancelar</button>
+      <button class="page-confirm-btn danger" type="button" onclick="confirmFriendDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="tutorial-overlay" id="tutorial-overlay">
+  <div class="tutorial-spotlight" id="tutorial-spotlight"></div>
+  <div class="tutorial-card" id="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+    <div class="tutorial-topline">
+      <div class="tutorial-kicker" id="tutorial-kicker">Bienvenido</div>
+      <div class="tutorial-count" id="tutorial-count">1/7</div>
+    </div>
+    <div class="tutorial-title" id="tutorial-title">Panini Tracker</div>
+    <div class="tutorial-text" id="tutorial-text">Te voy guiando por la app.</div>
+    <div class="tutorial-list" id="tutorial-list"></div>
+    <div class="tutorial-hint" id="tutorial-hint"></div>
+    <div class="tutorial-dots" id="tutorial-dots"></div>
+    <div class="tutorial-actions">
+      <button class="tutorial-btn ghost" id="tutorial-back" onclick="prevTutorialStep()">Atrás</button>
+      <button class="tutorial-btn ghost" id="tutorial-skip" onclick="finishTutorial()">Saltar</button>
+      <button class="tutorial-btn primary" id="tutorial-next" onclick="nextTutorialStep()">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- CONFETTI CANVAS -->
+
+</div><!-- /main-area -->
+<nav class="bottom-nav nav">
+  <button class="bn nav-i active" id="bn-album" onclick="goTab('album')">
+    <span class="bn-icon">📖</span>Álbum
+  </button>
+  <button class="bn nav-i" id="bn-trade" onclick="goTab('trade')">
+    <span class="bn-icon">🤝</span>Intercambio
+  </button>
+  <button class="bn nav-i" id="bn-summary" onclick="goTab('summary')">
+    <span class="bn-icon">📊</span>Progreso
+  </button>
+  <button class="bn nav-i" id="bn-config" onclick="goTab('config')">
+    <span class="bn-icon">⚙️</span>Configuración
+  </button>
+</nav>
+
+<div class="pwa-update-banner" id="pwa-update-banner" hidden>
+  <div class="pwa-update-icon">⬆️</div>
+  <div class="pwa-update-copy">
+    <div class="pwa-update-title">Nueva actualización disponible</div>
+    <div class="pwa-update-text">Tocá actualizar para forzar la última versión. En iPhone, si no cambia después de tocar, cerrá la app desde multitarea y abrila de nuevo.</div>
+  </div>
+  <div class="pwa-update-actions">
+    <button class="pwa-update-btn primary" type="button" onclick="applyPwaUpdate()">Actualizar</button>
+    <button class="pwa-update-btn ghost" type="button" onclick="hidePwaUpdateNotice()">Después</button>
+  </div>
+</div>
+
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;display:none;"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+
+<script>
+initPwaUpdates();
+</script>
+</body>
+</html>
