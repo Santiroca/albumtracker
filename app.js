@@ -5066,7 +5066,7 @@ async function shareMissingList(){
 // ═══════════════════════════════════════════════════════════
 const SHARED_ALBUM_KEY = 'pn26_shared_album';
 const SHARED_DEVICE_KEY = 'pn26_shared_device_id';
-const SHARED_REFRESH_MS = 7000;
+const SHARED_REFRESH_MS = 30000;
 let sharedAlbumPushTimer = null;
 let sharedAlbumRefreshTimer = null;
 let sharedAlbumBusy = false;
